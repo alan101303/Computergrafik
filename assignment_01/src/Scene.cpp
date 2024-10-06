@@ -130,14 +130,15 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
      * You can look at the classes `Light` and `Material` to check their attributes. Feel free to use
      * the existing vector functions in vec3.h e.g. mirror, reflect, norm, dot, normalize
      */
-    //vec3 color = ambience * _material.ambient;
+    vec3 color = ambience * _material.ambient;
     for (size_t i = 0; i < lights.size(); ++i) {
-        // color += lights[i].color * _material.diffuse * dot(_normal, (lights[i].position - _point));
+        color += lights[i].color * _material.diffuse * std::max(0.0,dot(normalize(_normal), normalize(lights[i].position))); // diffuse
+        //color += lights[i].color * _material.specular * dot(normalize(_view), normalize(lights[i].position));
     }
     // visualize the normal as a RGB color for now.
     //return color;
 
-    vec3 color = (_normal + Ivector) / 2.0;
+    //vec3 color = (_normal + vec3(1)) / 2.0;
 
     return color;
 
