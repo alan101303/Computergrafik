@@ -1,0 +1,5 @@
+C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/build/src/CMakeFiles/common.dir
+C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/build/src/CMakeFiles/raytrace.dir
+C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/build/src/CMakeFiles/debug_aabb.dir
