@@ -128,6 +128,73 @@ bool Scene::intersect(const Ray& _ray, Object_ptr& _object, vec3& _point, vec3& 
 
 vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view, const Material& _material)
 {
+    //Global ambient contribution
+    vec3 ambientLight = ambience * _material.ambient;
+    //Initialize variables for later
+    vec3 diffuseReflection(0);
+    vec3 specularReflection(0);
+
+    for (Light light : lights) {
+        //a normalized vector that points towards the light source
+        vec3 lDir = normalize(light.position - _point);
+
+        //this ray will be used to check whether there are objects
+        //between the point and the light source or not
+        vec3 displacement(0.0002,0.0002,0.0); //used to solve shadow acne
+        Ray shadowRay(_point + displacement, lDir);
+        //things that I need only to make intersect() give me the boolean that I am looking for
+        Object_ptr o;
+        vec3 a, b;
+        double t;
+
+        //calculate diffuse and specular reflection only if the ray is not a shadow ray
+        if (!intersect(shadowRay, o, a, b, t)) {
+            //max is calculated to avoid light coming from behind
+            diffuseReflection +=
+                light.color * _material.diffuse *
+                    std::max(0.0, dot(_normal, lDir));
+
+            if (dot(_normal, lDir) < 0 || dot(mirror(lDir,_normal),_view) < 0) {
+                //if the light comes from behind or doesn't go in the direction of the view,
+                //no illumination: do nothing.
+            } else {
+                specularReflection +=
+                    light.color * _material.specular *
+                        std::pow(
+                            dot(mirror(lDir, _normal), _view),
+                                _material.shininess
+                            );
+            }
+        }
+
+    }
+
+    //Calculate diffuse reflection and specular reflection for each light source
+    //and add them to the right variable
+    // for (const Light &light : lights) { //iterate each light source
+    //
+    //     //Calculate the length of the projection of the light on the normal
+    //     //If negative, the light comes from behind
+    //     //The length of _normal is 1, so it doesn't appear in the formula
+    //     double lengthProj = dot(normalize(light.position - _point), _normal); //todo: do the first vector has the right direction?
+    //     const Ray shadow_ray(_point + _normal*0.0001, vec3(1));
+    //     Object_ptr object;
+    //     vec3 a , b;
+    //     double d;
+    //     if (lengthProj < 0.0 || intersect(shadow_ray, object, a, b, d)) {
+    //         continue; //exit from the for loop
+    //     }
+    //
+    //     //calculate diffuse reflection
+    //     diffuseReflection += lengthProj * (light.color * _material.diffuse);
+    //
+    //     //calculate specular reflection
+    //     const vec3 dirRefl = mirror(light.position - _point, _normal);
+    //     double rDotV = dot(dirRefl, _view); //todo: maybe error
+    //     if (rDotV > 0.0) {
+    //         specularReflection += (light.color * _material.specular) * pow(rDotV, _material.shininess);
+    //     }
+    // }
 
      /** \todo
      * Compute the Phong lighting:
@@ -140,9 +207,9 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
      */
 
     // visualize the normal as a RGB color for now.
-    vec3 color = (_normal + vec3(1)) / 2.0;
+    // vec3 color = (_normal + vec3(1)) / 2.0;
 
-    return color;
+    return ambientLight + diffuseReflection + specularReflection;
 }
 
 //-----------------------------------------------------------------------------
