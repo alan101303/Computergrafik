@@ -1,0 +1,2 @@
+C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\ar.exe qc libcommon.a CMakeFiles/common.dir/Cylinder.cpp.obj CMakeFiles/common.dir/Mesh.cpp.obj CMakeFiles/common.dir/Plane.cpp.obj CMakeFiles/common.dir/Scene.cpp.obj CMakeFiles/common.dir/Sphere.cpp.obj CMakeFiles/common.dir/vec3.cpp.obj
+C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\ranlib.exe libcommon.a

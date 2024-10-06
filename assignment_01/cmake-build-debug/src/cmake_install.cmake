@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Richie/Documents/Uni Bern/Computergrafik/assignment_01/assignment_01/src
+# Install script for directory: C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

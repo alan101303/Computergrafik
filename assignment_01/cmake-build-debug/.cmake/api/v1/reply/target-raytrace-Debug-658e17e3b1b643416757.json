@@ -130,7 +130,7 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "src\\libcommon.a",
+				"fragment" : "libcommon.a",
 				"role" : "libraries"
 			},
 			{
