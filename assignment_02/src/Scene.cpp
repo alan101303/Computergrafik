@@ -136,10 +136,14 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
     vec3 normalized_normal = normalize(_normal);
     for (auto & light : lights) {
         vec3 normalized_point_light = normalize(light.position - _point);
-        color += light.color * _material.diffuse * std::max(0.0,dot(normalized_normal, normalized_point_light)); // diffuse
 
+        // Add diffuse lighting
+        color += light.color * _material.diffuse * std::max(0.0,dot(normalized_normal, normalized_point_light));
+
+        // The light doesn't come from behind and it goes into the direction of the view
         if (dot(normalized_normal, normalized_point_light) >= 0 && dot(mirror(normalized_point_light, normalized_normal), _view) >= 0) {
-            color += light.color * _material.specular * std::pow(dot(mirror(normalized_point_light, normalized_normal), _view), _material.shininess);
+          // Add specular lighting
+          color += light.color * _material.specular * std::pow(dot(mirror(normalized_point_light, normalized_normal), _view), _material.shininess);
         }
     }
 
