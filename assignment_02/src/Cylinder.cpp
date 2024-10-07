@@ -25,39 +25,44 @@ intersect(const Ray&  _ray,
           vec3&       _intersection_normal,
           double&     _intersection_t) const
 {
-    // Solve for where _ray intersects an infinite extension of the cylinder
     const vec3 &dir = _ray.direction;
-    const vec3   oc = _ray.origin - center;
+    const vec3 oc = _ray.origin - center;
+    const vec3 normalizedAxis = normalize(axis);
 
-    const double dir_parallel = dot(axis, dir),
-                  oc_parallel = dot(axis, oc);
+    const double dirA = dot(dir, normalizedAxis);
+    const double ocA = dot(oc, normalizedAxis);
+    const vec3 dirOrtho = dir - dirA*normalizedAxis;
+    const vec3 ocOrtho = oc - ocA*normalizedAxis;
+
 
     std::array<double, 2> t;
-    size_t nsol = solveQuadratic(
-            dot(dir, dir) - dir_parallel * dir_parallel,
-            2.0 * (dot(dir, oc) - dir_parallel * oc_parallel),
-            dot(oc, oc) - oc_parallel * oc_parallel - radius * radius, t);
+    size_t nsol = solveQuadratic(dot(dirOrtho, dirOrtho),
+                                 2 * dot(ocOrtho, dirOrtho),
+                                 dot(ocOrtho, ocOrtho) - radius * radius, t);
 
-    // Find the closest valid solution
-    // (in front of the viewer and within the cylinder's height).
     _intersection_t = NO_INTERSECTION;
-    for (size_t i = 0; i < nsol; ++i) {
-        if (t[i] <= 0) continue;
-        double z = dot(_ray(t[i]) - center, axis);
-        if (2 * std::abs(z) < height)
+
+    // Find the closest valid solution (in front of the viewer)
+    for (size_t i = 0; i < nsol; ++i)
+    {
+        if (t[i] > 0 && 2 * abs(dot((_ray(t[i]) - center), normalizedAxis)) <= height)
             _intersection_t = std::min(_intersection_t, t[i]);
     }
-    if (_intersection_t == NO_INTERSECTION) return false;
 
-    // compute intersection data
-    _intersection_point   = _ray(_intersection_t);
-    _intersection_normal  = (_intersection_point - center) / radius;
-    _intersection_normal -= dot(_intersection_normal, axis) * axis;
+    if (_intersection_t == NO_INTERSECTION)
+        return false;
 
-    // Choose the normal's orientation to be opposite the ray's
-    // (in case the ray intersects the inside surface)
-    if (dot(_intersection_normal, dir) > 0)
-        _intersection_normal *= -1.0;
+    _intersection_point = _ray(_intersection_t);
+    _intersection_normal = (_intersection_point - center) - dot((_intersection_point - center), normalizedAxis)*normalizedAxis;
 
     return true;
+
+    /** \todo
+     * - compute the first valid intersection `_ray` with the cylinder
+     *   (valid means in front of the viewer: t > 0)
+     * - store intersection point in `_intersection_point`
+     * - store ray parameter in `_intersection_t`
+     * - store normal at _intersection_point in `_intersection_normal`.
+     * - return whether there is an intersection with t > 0
+    */
 }

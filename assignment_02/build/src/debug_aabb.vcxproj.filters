@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Richie\Documents\Uni Bern\Computergrafik\assignment_01\assignment_01\src\debug_aabb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Richie\Documents\Uni Bern\Computergrafik\assignment_01\assignment_01\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2A64F4EF-99BD-3F60-9F8F-EE9F36FF93E2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
