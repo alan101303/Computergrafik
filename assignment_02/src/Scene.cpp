@@ -134,14 +134,16 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
     vec3 diffuseReflection(0);
     vec3 specularReflection(0);
 
+    vec3 normal = normalize(_normal);
+
     for (Light light : lights) {
         //a normalized vector that points towards the light source
         vec3 lDir = normalize(light.position - _point);
 
         //this ray will be used to check whether there are objects
         //between the point and the light source or not
-        vec3 displacement(0.0002,0.0002,0.0); //used to solve shadow acne
-        Ray shadowRay(_point + displacement, lDir);
+        vec3 displacement = 0.000001 * normal; //used to solve shadow acne
+        Ray shadowRay(_point +  displacement, lDir);
         //things that I need only to make intersect() give me the boolean that I am looking for
         Object_ptr o;
         vec3 a, b;
@@ -152,16 +154,16 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
             //max is calculated to avoid light coming from behind
             diffuseReflection +=
                 light.color * _material.diffuse *
-                    std::max(0.0, dot(_normal, lDir));
+                    std::max(0.0, dot(normal, lDir));
 
-            if (dot(_normal, lDir) < 0 || dot(mirror(lDir,_normal),_view) < 0) {
+            if (dot(_normal, lDir) < 0 || dot(mirror(lDir,normal),_view) < 0) {
                 //if the light comes from behind or doesn't go in the direction of the view,
                 //no illumination: do nothing.
             } else {
                 specularReflection +=
                     light.color * _material.specular *
                         std::pow(
-                            dot(mirror(lDir, _normal), _view),
+                            dot(mirror(lDir, normal), _view),
                                 _material.shininess
                             );
             }
