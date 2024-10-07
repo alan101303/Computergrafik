@@ -1,1 +1,0 @@
-CMakeLists.txt not found in C:\Users\Richie\Documents\Uni Bern\Computergrafik\Computergrafik\assignment_01 Select CMakeLists.txt
