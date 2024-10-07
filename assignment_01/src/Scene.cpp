@@ -137,11 +137,18 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
     for (size_t i = 0; i < lights.size(); ++i) {
         vec3 normalized_point_light = normalize(lights[i].position - _point);
         color += lights[i].color * _material.diffuse * std::max(0.0,dot(normalized_normal, normalized_point_light)); // diffuse
+/*
         double nl = dot(normalized_normal, normalized_point_light);
         vec3 r = 2*normalized_normal*nl - normalized_point_light;
         vec3 normalized_point_view = normalize(_view  - _point);
         if (nl >= 0 && dot(r, normalized_point_view) >= 0) {
             color += lights[i].color * _material.specular * pow(dot(r, normalized_point_view), _material.shininess);
+        }
+        */
+        if (dot(normalized_normal, normalized_point_light) < 0 || dot(mirror(normalized_point_light, normalized_normal), _view) < 0) {
+
+        } else {
+            color += lights[i].color * _material.specular * std::pow(dot(mirror(normalized_point_light, normalized_normal), _view), _material.shininess);
         }
     }
 
