@@ -1,0 +1,3 @@
+C:/Users/Utente/source/repos/Computergrafik/cmake-build-debug/CMakeFiles/Computergrafik.dir
+C:/Users/Utente/source/repos/Computergrafik/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Utente/source/repos/Computergrafik/cmake-build-debug/CMakeFiles/rebuild_cache.dir

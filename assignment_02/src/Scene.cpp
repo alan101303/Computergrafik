@@ -51,6 +51,7 @@ Image Scene::render()
     };
 
     // If possible, raytrace image columns in parallel.
+<<<<<<< Updated upstream
     /*
     #if HAVE_OPENMP
         std::cout << "Rendering with up to " << omp_get_max_threads() << " threads." << std::endl;
@@ -61,6 +62,17 @@ Image Scene::render()
     */
     for (int x = 0; x < int(camera.width); ++x)
     {
+=======
+
+#if HAVE_OPENMPhjkjk
+    std::cout << "Rendering with up to " << omp_get_max_threads() << " threads." << std::endl;
+#  pragma omp parallel for
+#else
+    std::cout << "Rendering singlethreaded (compiled without OpenMP)." << std::endl;
+#endif
+
+    for (int x=0; x<int(camera.width); ++x) {
+>>>>>>> Stashed changes
         raytraceColumn(x);
     }
 
@@ -90,6 +102,31 @@ vec3 Scene::trace(const Ray &_ray, int _depth)
     // compute local Phong lighting (ambient+diffuse+specular)
     vec3 color = lighting(point, normal, -_ray.direction, object->material);
 
+<<<<<<< Updated upstream
+=======
+
+    /** \todo
+     * Compute reflections by recursive ray tracing:
+     * - check whether `object` is reflective by checking its `material.mirror`
+     * - check recursion depth
+     * - generate reflected ray, compute its color contribution, and mix it with
+     * the color computed by local Phong lighting (use `object->material.mirror` as weight)
+     * - check whether your recursive algorithm reflects the ray `max_depth` times
+     */
+    // Check if object is reflective
+    if (object->material.mirror > 0) {
+        // Generate reflected ray
+        vec3 _ref_ray_dir = normalize(2 * normal*dot(normal, -_ray.direction) + _ray.direction);
+        Ray _ref_ray = Ray(point + _ref_ray_dir*0.0001, _ref_ray_dir);
+
+        // Compute reflected color
+        vec3 reflected_color = trace(_ref_ray, ++_depth);
+
+        // Mix reflected color with local Phong color
+        color = (1 - object->material.mirror) * color + object->material.mirror * reflected_color;
+    }
+
+>>>>>>> Stashed changes
     return color;
 }
 

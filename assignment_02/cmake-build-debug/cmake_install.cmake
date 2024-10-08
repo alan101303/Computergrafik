@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # Install script for directory: C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01
+=======
+# Install script for directory: C:/Users/Utente/source/repos/Computergrafik/assignment_02
+>>>>>>> Stashed changes
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +43,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+<<<<<<< Updated upstream
   include("C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/src/cmake_install.cmake")
+=======
+  include("C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/cmake_install.cmake")
+>>>>>>> Stashed changes
 
 endif()
 
@@ -51,5 +59,9 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
+<<<<<<< Updated upstream
 file(WRITE "C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+=======
+file(WRITE "C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+>>>>>>> Stashed changes
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

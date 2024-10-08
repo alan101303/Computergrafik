@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/CMakeFiles/edit_cache.dir
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/src/CMakeFiles/common.dir
@@ -5,3 +6,12 @@ C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/c
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/src/CMakeFiles/debug_aabb.dir
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/src/CMakeFiles/edit_cache.dir
 C:/Users/Richie/Documents/Uni Bern/Computergrafik/Computergrafik/assignment_01/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+=======
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/common.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/raytrace.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/debug_aabb.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/edit_cache.dir
+C:/Users/Utente/source/repos/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+>>>>>>> Stashed changes
