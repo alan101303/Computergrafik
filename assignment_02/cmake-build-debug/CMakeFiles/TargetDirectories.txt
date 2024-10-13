@@ -1,7 +1,0 @@
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/common.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/raytrace.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/debug_aabb.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/edit_cache.dir
-/home/alan/Desktop/Computergrafik/assignment_02/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
