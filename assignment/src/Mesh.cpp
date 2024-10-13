@@ -255,6 +255,16 @@ bool Mesh::intersect(const Ray& _ray,
 
 //-----------------------------------------------------------------------------
 
+double determinant3x3(std::vector<vec3> matrix) {
+    double a = matrix[0][0], b = matrix[0][1], c = matrix[0][2];
+    double d = matrix[1][0], e = matrix[1][1], f = matrix[1][2];
+    double g = matrix[2][0], h = matrix[2][1], i = matrix[2][2];
+
+    // Apply the determinant formula for 3x3 matrix
+    return a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+}
+
+
 
 bool
 Mesh::
@@ -268,6 +278,33 @@ intersect_triangle(const Triangle&  _triangle,
     const vec3& p1 = vertices_[_triangle.i1].position;
     const vec3& p2 = vertices_[_triangle.i2].position;
 
+    const vec3 b = _ray.origin - p2;
+    const vec3 alphaPart = p0 - p2;
+    const vec3 betaPart = p1 - p2;
+    const vec3 tPart = _ray.direction * (-1);
+    const std::vector<vec3> A = { alphaPart, betaPart, tPart};
+    const double detA = determinant3x3(A);
+    const double alpha = determinant3x3({b, betaPart, tPart}) / detA;
+    const double beta = determinant3x3({alphaPart, b, tPart}) / detA;
+    const double t = determinant3x3({alphaPart, betaPart, b}) / detA;
+    const double gamma = 1 - alpha - beta;
+
+    if (t < 0 || alpha < 0 || beta < 0 || gamma < 0) {
+        return false;
+    }
+
+    _intersection_t = t;
+    _intersection_point = _ray(_intersection_t);
+
+    if (draw_mode_ == FLAT) {
+        _intersection_normal = normalize(_triangle.normal);
+    } else {
+        _intersection_normal = normalize(
+            alpha * vertices_[_triangle.i0].normal + beta * vertices_[_triangle.i1].normal + gamma * vertices_[_triangle
+                .i2].normal);
+    }
+
+    return true;
     /** \todo
     * - intersect _ray with _triangle
     * - store intersection point in `_intersection_point`
@@ -279,6 +316,7 @@ intersect_triangle(const Triangle&  _triangle,
     *
     * Hint: Rearrange `ray.origin + t*ray.dir = a*p0 + b*p1 + (1-a-b)*p2` to obtain a solvable
     * system for a, b and t.
+    *
     * Refer to [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) to easily solve it.
      */
 
