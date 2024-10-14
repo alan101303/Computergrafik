@@ -209,6 +209,8 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
     * in `Mesh::compute_bounding_box()`.
     */
 
+
+
     return true;
 }
 
@@ -274,28 +276,54 @@ intersect_triangle(const Triangle&  _triangle,
                    vec3&            _intersection_normal,
                    double&          _intersection_t) const
 {
+    //Get the vertices of the given triangle:
     const vec3& p0 = vertices_[_triangle.i0].position;
     const vec3& p1 = vertices_[_triangle.i1].position;
     const vec3& p2 = vertices_[_triangle.i2].position;
 
-    const vec3 b = _ray.origin - p2;
-    const vec3 alphaPart = p0 - p2;
-    const vec3 betaPart = p1 - p2;
-    const vec3 tPart = _ray.direction * (-1);
-    const std::vector<vec3> A = { alphaPart, betaPart, tPart};
-    const double detA = determinant3x3(A);
-    const double alpha = determinant3x3({b, betaPart, tPart}) / detA;
-    const double beta = determinant3x3({alphaPart, b, tPart}) / detA;
-    const double t = determinant3x3({alphaPart, betaPart, b}) / detA;
-    const double gamma = 1 - alpha - beta;
+    //A triangle can be represented through this formula: x = 1*U + a*A + b*B
+    // U is the origin of the triangle, A and B are the two vectors that indicate the other two Vertices starting from U
+    // 0 <= a,b <= 1
+    //To find the intersection with a ray: o + td = 1*U + a*A + b*B
+    //This is the same as: o - U = a*A + b*B - td
+    //Seen as a matrix: o - U = (A,B,d) * (a,b,t)^T
 
+    // o - U
+    const vec3 b = _ray.origin - p2;
+
+    // a
+    const vec3 alphaPart = p0 - p2;
+
+    // b
+    const vec3 betaPart = p1 - p2;
+
+    // -d
+    const vec3 tPart = _ray.direction * (-1);
+
+    //Matrix (A,B,d)
+    const std::vector<vec3> A = { alphaPart, betaPart, tPart};
+
+    //Cramer's Rule applied:
+    const double detA = determinant3x3(A);
+    // a
+    const double alpha = determinant3x3({b, betaPart, tPart}) / detA;
+    // b
+    const double beta = determinant3x3({alphaPart, b, tPart}) / detA;
+    // t
+    const double t = determinant3x3({alphaPart, betaPart, b}) / detA;
+
+    // a and b must be positive. Here gamma doesn't refer to the other formula seen in the lesson.
+    // gamma is used to check whether a and b are smaller-equal 1 or not
+    const double gamma = 1 - alpha - beta;
     if (t < 0 || alpha < 0 || beta < 0 || gamma < 0) {
         return false;
     }
 
+    //Saves the things that we need:
     _intersection_t = t;
     _intersection_point = _ray(_intersection_t);
 
+    //Returns the right _intersection_normal according to the draw_mode_
     if (draw_mode_ == FLAT) {
         _intersection_normal = normalize(_triangle.normal);
     } else {
