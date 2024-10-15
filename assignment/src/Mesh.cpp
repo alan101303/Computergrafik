@@ -237,9 +237,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         // Planes 1 and 5
 
         //Plane 1:
-        double mu_1 = determinant3x3({sost_A,z,a});
-        double lambda_1 = determinant3x3({x,sost_A,a});
-        double t_1 = (-1) * determinant3x3({x,z,sost_A});
+        const double mu_1 = determinant3x3({sost_A,z,a}) / det_xz;
+        const double lambda_1 = determinant3x3({x,sost_A,a}) / det_xz;
+        const double t_1 = ((-1) * determinant3x3({x,z,sost_A})) / det_xz;
 
         if (0 <= mu_1 && mu_1 <= norm(d) && 0 <= lambda_1 && lambda_1 <= norm(e) && 0 <= t_1)
         {
@@ -247,9 +247,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         }
 
         //Plane 5:
-        double mu_2 = determinant3x3({sost_B,z,a});
-        double lambda_2 = determinant3x3({x,sost_B,a});
-        double t_2 = (-1) * determinant3x3({x,z,sost_B});
+        const double mu_2 = determinant3x3({sost_B,z,a}) / det_xz;
+        const double lambda_2 = determinant3x3({x,sost_B,a}) / det_xz;
+        const double t_2 = ((-1) * determinant3x3({x,z,sost_B})) / det_xz;
 
         if (0 >= mu_2 && abs(mu_2) <= norm(d) && 0 >= lambda_2 && abs(lambda_2) <= norm(e) && 0 <= t_2)
         {
@@ -261,9 +261,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         // Planes 2 and 6
 
         //Plane 2:
-        double mu_1 = determinant3x3({sost_A,z,a});
-        double lambda_1 = determinant3x3({y,sost_A,a});
-        double t_1 = (-1) * determinant3x3({y,z,sost_A});
+        const double mu_1 = determinant3x3({sost_A,z,a}) / det_yz;
+        const double lambda_1 = determinant3x3({y,sost_A,a}) / det_yz;
+        const double t_1 = ((-1) * determinant3x3({y,z,sost_A})) / det_yz;
 
         if (0 <= mu_1 && mu_1 <= norm(p) && 0 <= lambda_1 && lambda_1 <= norm(e) && 0 <= t_1)
         {
@@ -271,9 +271,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         }
 
         //Plane 6:
-        double mu_2 = determinant3x3({sost_B,z,a});
-        double lambda_2 = determinant3x3({y,sost_B,a});
-        double t_2 = (-1) * determinant3x3({y,z,sost_B});
+        const double mu_2 = determinant3x3({sost_B,z,a}) / det_yz;
+        const double lambda_2 = determinant3x3({y,sost_B,a}) / det_yz;
+        const double t_2 = ((-1) * determinant3x3({y,z,sost_B})) / det_yz;
 
         if (0 >= mu_2 && abs(mu_2) <= norm(p) && 0 >= lambda_2 && abs(lambda_2) <= norm(e) && 0 <= t_2)
         {
@@ -285,9 +285,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         // Planes 3 and 4
 
         //Plane 3:
-        double mu_1 = determinant3x3({sost_A,y,a});
-        double lambda_1 = determinant3x3({x,sost_A,a});
-        double t_1 = (-1) * determinant3x3({x,y,sost_A});
+        const double mu_1 = determinant3x3({sost_A,y,a}) / det_xy;
+        const double lambda_1 = determinant3x3({x,sost_A,a}) / det_xy;
+        const double t_1 = ((-1) * determinant3x3({x,y,sost_A})) / det_xy;
 
         if (0 <= mu_1 && mu_1 <= norm(d) && 0 <= lambda_1 && lambda_1 <= norm(p) && 0 <= t_1)
         {
@@ -295,9 +295,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
         }
 
         //Plane 4:
-        double mu_2 = determinant3x3({sost_B,y,a});
-        double lambda_2 = determinant3x3({x,sost_B,a});
-        double t_2 = (-1) * determinant3x3({x,y,sost_B});
+        const double mu_2 = determinant3x3({sost_B,y,a}) / det_xy;
+        const double lambda_2 = determinant3x3({x,sost_B,a}) / det_xy;
+        const double t_2 = ((-1) * determinant3x3({x,y,sost_B})) / det_xy;
 
         if (0 >= mu_2 && abs(mu_2) <= norm(d) && 0 >= lambda_2 && abs(lambda_2) <= norm(p) && 0 <= t_2)
         {
@@ -308,7 +308,7 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
 
     return false;
 
-    
+
     /** \todo
     * Intersect the ray `_ray` with the axis-aligned bounding box of the mesh.
     * Note that the minimum and maximum point of the bounding box are stored
