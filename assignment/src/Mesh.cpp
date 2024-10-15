@@ -256,7 +256,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
             return true;
         }
 
-    } else if (det_yz != 0)
+    }
+
+    if (det_yz != 0)
     {
         // Planes 2 and 6
 
@@ -280,7 +282,9 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
             return true;
         }
 
-    } else if (det_xy != 0)
+    }
+
+    if (det_xy != 0)
     {
         // Planes 3 and 4
 
