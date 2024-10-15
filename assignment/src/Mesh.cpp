@@ -308,6 +308,31 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
 
     return false;
 
+    /* Test this code 
+    double tMinX = (bb_min_[0] - _ray.origin[0]) / _ray.direction[0];
+    double tMinY = (bb_min_[1] - _ray.origin[1]) / _ray.direction[1];
+    double tMinZ = (bb_min_[2] - _ray.origin[2]) / _ray.direction[2];
+    double tMaxX = (bb_max_[0] - _ray.origin[0]) / _ray.direction[0];
+    double tMaxY = (bb_max_[1] - _ray.origin[1]) / _ray.direction[1];
+    double tMaxZ = (bb_max_[2] - _ray.origin[2]) / _ray.direction[2];
+
+    tMinX = std::min(tMinX, tMaxX);
+    tMinY = std::min(tMinY, tMaxY);
+    tMinZ = std::min(tMinZ, tMaxZ);
+    tMaxX = std::max(tMaxX, tMinX);
+    tMaxY = std::max(tMaxY, tMinY);
+    tMaxZ = std::max(tMaxZ, tMinZ);
+
+    double tEnter = std::max(tMinX, tMinY, tMinZ);
+    double tExit = std::min(tMaxX, tMaxY, tMaxZ);
+
+    if (tEnter > tExit || tExit < 0) {
+       return false;
+    }
+    return true;
+
+    */
+
 
     /** \todo
     * Intersect the ray `_ray` with the axis-aligned bounding box of the mesh.
