@@ -206,27 +206,27 @@ double determinant3x3(std::vector<vec3> matrix) {
 
 bool Mesh::intersect_bounding_box(const Ray& _ray) const
 {
-    vec3 x = normalize(vec3(1,0,0));
-    vec3 y = normalize(vec3(0,1,0));
-    vec3 z = normalize(vec3(0,0,1));
+    const vec3 x = normalize(vec3(1,0,0));
+    const vec3 y = normalize(vec3(0,1,0));
+    const vec3 z = normalize(vec3(0,0,1));
 
-    vec3 A = bb_min_;
-    vec3 G = bb_max_;
-    vec3 v = G - A;
+    const vec3 A = bb_min_;
+    const vec3 G = bb_max_;
+    const vec3 v = G - A;
 
-    vec3 e = dot(v,z) * z;
-    vec3 w = v - e;
-    vec3 d = dot(w,x) * x;
-    vec3 p = (A + w) - (A + d);
+    const vec3 e = dot(v,z) * z;
+    const vec3 w = v - e;
+    const vec3 d = dot(w,x) * x;
+    const vec3 p = (A + w) - (A + d);
 
-    vec3 a = _ray.direction;
-    vec3 o = _ray.origin;
+    const vec3 a = _ray.direction;
+    const vec3 o = _ray.origin;
 
     const std::vector<vec3> mat_xz = {x, z, a};
     const std::vector<vec3> mat_yz = {y, z, a};
     const std::vector<vec3> mat_xy = {x, y, a};
-    vec3 sost_A = o - A;
-    vec3 sost_B = o - G;
+    const vec3 sost_A = o - A;
+    const vec3 sost_B = o - G;
 
     const double det_xz = determinant3x3(mat_xz);
     const double det_yz = determinant3x3(mat_yz);
