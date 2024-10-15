@@ -195,11 +195,120 @@ void Mesh::compute_bounding_box()
 
 //-----------------------------------------------------------------------------
 
+double determinant3x3(std::vector<vec3> matrix) {
+    double a = matrix[0][0], b = matrix[0][1], c = matrix[0][2];
+    double d = matrix[1][0], e = matrix[1][1], f = matrix[1][2];
+    double g = matrix[2][0], h = matrix[2][1], i = matrix[2][2];
+
+    // Apply the determinant formula for 3x3 matrix
+    return a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+}
 
 bool Mesh::intersect_bounding_box(const Ray& _ray) const
 {
+    vec3 x = normalize(vec3(1,0,0));
+    vec3 y = normalize(vec3(0,1,0));
+    vec3 z = normalize(vec3(0,0,1));
 
+    vec3 A = bb_min_;
+    vec3 G = bb_max_;
+    vec3 v = G - A;
 
+    vec3 e = dot(v,z) * z;
+    vec3 w = v - e;
+    vec3 d = dot(w,x) * x;
+    vec3 p = (A + w) - (A + d);
+
+    vec3 a = _ray.direction;
+    vec3 o = _ray.origin;
+
+    const std::vector<vec3> mat_xz = {x, z, a};
+    const std::vector<vec3> mat_yz = {y, z, a};
+    const std::vector<vec3> mat_xy = {x, y, a};
+    vec3 sost_A = o - A;
+    vec3 sost_B = o - G;
+
+    const double det_xz = determinant3x3(mat_xz);
+    const double det_yz = determinant3x3(mat_yz);
+    const double det_xy = determinant3x3(mat_xy);
+
+    if (det_xz != 0)
+    {
+        // Planes 1 and 5
+
+        //Plane 1:
+        double mu_1 = determinant3x3({sost_A,z,a});
+        double lambda_1 = determinant3x3({x,sost_A,a});
+        double t_1 = (-1) * determinant3x3({x,z,sost_A});
+
+        if (0 <= mu_1 && mu_1 <= norm(d) && 0 <= lambda_1 && lambda_1 <= norm(e) && 0 <= t_1)
+        {
+            return true;
+        }
+
+        //Plane 5:
+        double mu_2 = determinant3x3({sost_B,z,a});
+        double lambda_2 = determinant3x3({x,sost_B,a});
+        double t_2 = (-1) * determinant3x3({x,z,sost_B});
+
+        if (0 >= mu_2 && abs(mu_2) <= norm(d) && 0 >= lambda_2 && abs(lambda_2) <= norm(e) && 0 <= t_2)
+        {
+            return true;
+        }
+
+    } else if (det_yz != 0)
+    {
+        // Planes 2 and 6
+
+        //Plane 2:
+        double mu_1 = determinant3x3({sost_A,z,a});
+        double lambda_1 = determinant3x3({y,sost_A,a});
+        double t_1 = (-1) * determinant3x3({y,z,sost_A});
+
+        if (0 <= mu_1 && mu_1 <= norm(p) && 0 <= lambda_1 && lambda_1 <= norm(e) && 0 <= t_1)
+        {
+            return true;
+        }
+
+        //Plane 6:
+        double mu_2 = determinant3x3({sost_B,z,a});
+        double lambda_2 = determinant3x3({y,sost_B,a});
+        double t_2 = (-1) * determinant3x3({y,z,sost_B});
+
+        if (0 >= mu_2 && abs(mu_2) <= norm(p) && 0 >= lambda_2 && abs(lambda_2) <= norm(e) && 0 <= t_2)
+        {
+            return true;
+        }
+
+    } else if (det_xy != 0)
+    {
+        // Planes 3 and 4
+
+        //Plane 3:
+        double mu_1 = determinant3x3({sost_A,y,a});
+        double lambda_1 = determinant3x3({x,sost_A,a});
+        double t_1 = (-1) * determinant3x3({x,y,sost_A});
+
+        if (0 <= mu_1 && mu_1 <= norm(d) && 0 <= lambda_1 && lambda_1 <= norm(p) && 0 <= t_1)
+        {
+            return true;
+        }
+
+        //Plane 4:
+        double mu_2 = determinant3x3({sost_B,y,a});
+        double lambda_2 = determinant3x3({x,sost_B,a});
+        double t_2 = (-1) * determinant3x3({x,y,sost_B});
+
+        if (0 >= mu_2 && abs(mu_2) <= norm(d) && 0 >= lambda_2 && abs(lambda_2) <= norm(p) && 0 <= t_2)
+        {
+            return true;
+        }
+
+    }
+
+    return false;
+
+    
     /** \todo
     * Intersect the ray `_ray` with the axis-aligned bounding box of the mesh.
     * Note that the minimum and maximum point of the bounding box are stored
@@ -209,10 +318,6 @@ bool Mesh::intersect_bounding_box(const Ray& _ray) const
     * with all triangles of every mesh in the scene. The bounding boxes are computed
     * in `Mesh::compute_bounding_box()`.
     */
-
-
-
-    return true;
 }
 
 
@@ -257,17 +362,6 @@ bool Mesh::intersect(const Ray& _ray,
 
 
 //-----------------------------------------------------------------------------
-
-double determinant3x3(std::vector<vec3> matrix) {
-    double a = matrix[0][0], b = matrix[0][1], c = matrix[0][2];
-    double d = matrix[1][0], e = matrix[1][1], f = matrix[1][2];
-    double g = matrix[2][0], h = matrix[2][1], i = matrix[2][2];
-
-    // Apply the determinant formula for 3x3 matrix
-    return a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
-}
-
-
 
 bool
 Mesh::
