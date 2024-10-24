@@ -1,9 +1,10 @@
-VERTEX NORMALS:
-Everything went linear. No problems are to be notified.
+Richie Saseetharan: He implemented the Oren-Nayar-Model.
 
-RAY-TRIANGLE INTERSECTION:
-At first glance I didn't notice that it was possible to find t (I mean this t: o+td) in the euclidean space by solving 3 linear equation. After reading the Tipp from the exercise hour about the Cramer's Rule everything went pretty straight forward. The comments in the code explain exaustively the formula that I have used.
+Alan Bragalini: I got sick. I only wrote this readme.txt and prepared the files to upload on ilias.
 
-BOUNDING BOX INTERSECTION:
-Explanations about the logic of the function can be found in the file intersect_bounding_box.pdf 
-In this method I use a lot of "if". In the first version I used if-else statements. This caused a lot of problems. I found out about the problem using the coverage tool of clion. I tried deleting the "esle if" and simply write "if": it worked. This is all.
+Francesco Lam: He went to Italy for the weekend and did nothing.
+
+
+DIFFICULTIES ENCOUNTERED IN GETTING THE OPENGL FRAMEWORK RUNNING:
+The only difficulty was to understand which packages I had to install.
+Fortunately ChatGPT solved all the problems.

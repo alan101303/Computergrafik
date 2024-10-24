@@ -153,6 +153,8 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
         if (!intersect(shadowRay, o, a, b, t)) {
             //max is calculated to avoid light coming from behind
             diffuseReflection +=
+                light.color * _material.diffuse *
+                    std::max(0.0, dot(normal, lDir));
 
             if (_material.roughness == 0.0) {
                 // Phong model
