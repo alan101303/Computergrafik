@@ -38,6 +38,10 @@ struct Material
 
     /// reflectivity factor (1=perfect mirror, 0=no reflection).
     double mirror;
+
+    // roughness factor
+    double roughness;
+
 };
 
 
@@ -47,7 +51,7 @@ struct Material
 /// read material from stream
 inline std::istream& operator>>(std::istream& is, Material& m)
 {
-    is >> m.ambient >> m.diffuse >> m.specular >> m.shininess >> m.mirror;
+    is >> m.ambient >> m.diffuse >> m.specular >> m.shininess >> m.mirror >> m.roughness;
     return is;
 }
 

@@ -153,8 +153,26 @@ vec3 Scene::lighting(const vec3& _point, const vec3& _normal, const vec3& _view,
         if (!intersect(shadowRay, o, a, b, t)) {
             //max is calculated to avoid light coming from behind
             diffuseReflection +=
-                light.color * _material.diffuse *
-                    std::max(0.0, dot(normal, lDir));
+
+            if (_material.roughness == 0.0) {
+                // Phong model
+                //max is calculated to avoid light coming from behind
+                        std::max(0.0, dot(normal, lDir));
+            } else {
+                // Oren-Nayar-Model
+                double sigma2 = _material.roughness * _material.roughness;
+                double A = 1.0 - (sigma2 / (2.0 * (sigma2 + 0.33)));
+                double B = 0.45 * sigma2 / (sigma2 + 0.09);
+                double cosTheta_i = std::max(0.0, dot(normal, lDir));
+                double cosTheta_r = std::max(0.0, dot(normal, _view));
+                double alpha = std::max(acos(cosTheta_i), acos(cosTheta_r));
+                double beta = std::min(acos(cosTheta_i), acos(cosTheta_r));
+                double cosPhiDiff = dot(normalize(lDir - normal * cosTheta_i), normalize(_view - normal * cosTheta_r));
+
+                diffuseReflection += light.color * _material.diffuse *
+                                     (A + B * std::max(0.0, cosPhiDiff) * sin(alpha) * tan(beta)) * cosTheta_i;
+            }
+
 
             if (dot(_normal, lDir) < 0 || dot(mirror(lDir,normal),_view) < 0) {
                 //if the light comes from behind or doesn't go in the direction of the view,
