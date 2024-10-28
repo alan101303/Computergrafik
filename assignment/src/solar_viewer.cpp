@@ -208,6 +208,28 @@ void Solar_viewer::update_body_positions() {
      *       and earth's moon. Do not explicitly place the space ship, its position
      *       is fixed for now.
      * */
+
+    std::array<Planet *, 6> bodies = { &sun_, &mercury_, &venus_, &earth_, &moon_, &mars_};
+    for (unsigned int i = 0; i < bodies.size(); i++)
+    {
+        //Saves angle and radius from the origin in a enjoyable way
+        const float angle = bodies[i]->angle_orbit_;
+        const float distance = bodies[i]->distance_;
+
+        //Matrix to calculate rotation around y-axis
+        mat4 R_y = mat4(0);
+        //Fills the matrix according to the formula on the slides
+        R_y(0,0) = cos(angle);
+        R_y(0,2) = sin(angle);
+        R_y(1,1) = 1;
+        R_y(2,0) = -sin(angle);
+        R_y(2,2) = cos(angle);
+        R_y(3,3) = 1;
+
+        //Updates the position:
+        bodies[i]->pos_ = R_y * bodies[i]->pos_;
+    }
+
 }
 
 //-----------------------------------------------------------------------------
