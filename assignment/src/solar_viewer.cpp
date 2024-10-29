@@ -209,26 +209,27 @@ void Solar_viewer::update_body_positions() {
      *       is fixed for now.
      * */
 
-    std::array<Planet *, 6> bodies = { &sun_, &mercury_, &venus_, &earth_, &moon_, &mars_};
+    std::array<Planet *, 6> bodies = { &sun_, &mercury_, &venus_, &moon_, &earth_, &mars_};
     for (unsigned int i = 0; i < bodies.size(); i++)
     {
-        //Saves angle and radius from the origin in a enjoyable way
+        //Saves angle in an enjoyable way
         const float angle = bodies[i]->angle_orbit_;
-        const float distance = bodies[i]->distance_;
 
         //Matrix to calculate rotation around y-axis
-        mat4 R_y = mat4(0);
-        //Fills the matrix according to the formula on the slides
-        R_y(0,0) = cos(angle);
-        R_y(0,2) = sin(angle);
-        R_y(1,1) = 1;
-        R_y(2,0) = -sin(angle);
-        R_y(2,2) = cos(angle);
-        R_y(3,3) = 1;
+        mat4 R_y = mat4::rotate_y(angle);
 
-        //Updates the position:
-        bodies[i]->pos_ = R_y * bodies[i]->pos_;
+        if (i == 3)
+        {
+            //Make the moon rotate around the earth
+            bodies[i]->pos_ = mat4::translate(earth_.pos_) * (R_y * vec4(bodies[i]->distance_, 0, 0, 0));
+        } else
+        {
+            //Updates the position:
+            bodies[i]->pos_ = R_y * vec4(bodies[i]->distance_, 0, 0, 0);
+        }
+
     }
+
 
 }
 
@@ -371,62 +372,26 @@ void Solar_viewer::paint()
     draw_scene(projection, view);
     */
 
+    //Declare variables
+    vec4 eye, up, center;
 
 
     if (in_ship_)
     {
         //In ship. The ship is going to be the new "center-planet".
+
         //Use a shorter variable-name and protect planet_to_look_at_ from changes
         const Ship* ship = &ship_;
-        //Place eye in the right position, ignoring the rotation, and look at the ship slightly from behind
-        vec4 eye = ship->pos_ - vec4(0,0,ship->radius_  * 2, 1);
-        vec4 up = vec4(0,1,0,0);
-
         //Set center to be the ship
-        vec4 center = ship->pos_;
+        center = ship->pos_;
 
-        //Look at the ship slightly from above = rotation around the x-axis
-        //Rotation of 20 degrees
-        mat4 slightly_R_x = mat4(0);
-        slightly_R_x(0,0) = 1;
-        slightly_R_x(1,1) = cos(20);
-        slightly_R_x(1,2) = -sin(20);
-        slightly_R_x(2,1) = sin(20);
-        slightly_R_x(2,2) = cos(20);
-        slightly_R_x(3,3) = 1;
-        //Rotate eye and up
-        eye = (slightly_R_x * (eye - center)) + center;
-        up = (slightly_R_x * (up)); //Ignore center because up is a vector
+        //Set up the rotation matrix with an angle given by the sum of the angle of the Ship
+        //and y_angle
+        mat4 R_y = mat4::rotate_y(y_angle_ + ship->angle_);
 
-        //Initializate rotation matrices needed for rotation around x' and y'
-        //TODO: What should I update the info of the ship or do what?
-        mat4 R_y = mat4(0);
-        R_y(0,0) = cos(y_angle_);
-        R_y(0,2) = sin(y_angle_);
-        R_y(1,1) = 1;
-        R_y(2,0) = -sin(y_angle_);
-        R_y(2,2) = cos(y_angle_);
-        R_y(3,3) = 1;
-        mat4 R_x = mat4(0);
-        R_x(0,0) = 1;
-        R_x(1,1) = cos(x_angle_);
-        R_x(1,2) = -sin(x_angle_);
-        R_x(2,1) = sin(x_angle_);
-        R_x(2,2) = cos(x_angle_);
-        R_x(3,3) = 1;
-
-        //Rotate eye with respect to the new center
-        eye = (R_x * R_y * (eye-center)) + center;
-        //Rotate "up", too
-        up = (R_x * R_x * (up)); //Ignore center because up is a vector
-
-        //Make view matrix
-        mat4    view = mat4::look_at(vec3(eye), vec3(center), vec3(up));
-
-        //Copy-pasted from the "example code"
-        billboard_x_angle_ = billboard_y_angle_ = 0.0f;
-        mat4 projection = mat4::perspective(fovy_, (float)width_/(float)height_, near_, far_);
-        draw_scene(projection, view);
+        //Place eye in the right position and look at the ship slightly from behind
+        eye = center + R_y * vec4(0,0.01,(-1) * dist_factor_ * ship->radius_  * 2, 1);
+        up = R_y * vec4(0,1,0,0);
 
     } else
     {
@@ -435,41 +400,29 @@ void Solar_viewer::paint()
         //Use a shorter variable-name and protect planet_to_look_at_ from changes
         const Planet* planet = planet_to_look_at_;
         //Place eye in the right position, ignoring the rotation
-        vec4 eye = planet->pos_ - vec4(0,0,dist_factor_ * planet->radius_, 1);
-        vec4 up = vec4(0,1,0,0);
+        eye = planet->pos_ - vec4(0,0,dist_factor_ * planet->radius_, 1);
+        up = vec4(0,1,0,0);
 
         //Set center to be the desired planet
-        vec4 center = planet->pos_;
+        center = planet->pos_;
 
         //Initializate rotation matrices needed for rotation around x' and y'
-        mat4 R_y = mat4(0);
-        R_y(0,0) = cos(y_angle_);
-        R_y(0,2) = sin(y_angle_);
-        R_y(1,1) = 1;
-        R_y(2,0) = -sin(y_angle_);
-        R_y(2,2) = cos(y_angle_);
-        R_y(3,3) = 1;
-        mat4 R_x = mat4(0);
-        R_x(0,0) = 1;
-        R_x(1,1) = cos(x_angle_);
-        R_x(1,2) = -sin(x_angle_);
-        R_x(2,1) = sin(x_angle_);
-        R_x(2,2) = cos(x_angle_);
-        R_x(3,3) = 1;
+        mat4 R_y = mat4::rotate_y(y_angle_);
+        mat4 R_x = mat4::rotate_x(x_angle_);
 
         //Rotate eye with respect to the new center
         eye = (R_x * R_y * (eye-center)) + center;
         //Rotate "up", too
         up = (R_x * R_x * (up)); //Ignore center because up is a vector
-
-        //Make view matrix
-        mat4    view = mat4::look_at(vec3(eye), vec3(center), vec3(up));
-
-        //Copy-pasted from the "example code"
-        billboard_x_angle_ = billboard_y_angle_ = 0.0f;
-        mat4 projection = mat4::perspective(fovy_, (float)width_/(float)height_, near_, far_);
-        draw_scene(projection, view);
     }
+
+    //Make view matrix
+    mat4    view = mat4::look_at(vec3(eye), vec3(center), vec3(up));
+
+    //Copy-pasted from the "example code"
+    billboard_x_angle_ = billboard_y_angle_ = 0.0f;
+    mat4 projection = mat4::perspective(fovy_, (float)width_/(float)height_, near_, far_);
+    draw_scene(projection, view);
 
 
 
@@ -543,6 +496,7 @@ void Solar_viewer::draw_scene(mat4& _projection, mat4& _view)
      *
      *  Hint: See how it is done for the Sun in the code above.
      */
+
 
     // check for OpenGL errors
     glCheckError();
