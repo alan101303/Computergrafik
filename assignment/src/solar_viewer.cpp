@@ -212,20 +212,24 @@ void Solar_viewer::update_body_positions() {
     std::array<Planet *, 6> bodies = { &sun_, &mercury_, &venus_, &moon_, &earth_, &mars_};
     for (unsigned int i = 0; i < bodies.size(); i++)
     {
-        //Saves angle in an enjoyable way
-        const float angle = bodies[i]->angle_orbit_;
 
         //Matrix to calculate rotation around y-axis
-        mat4 R_y = mat4::rotate_y(angle);
+        mat4 R_y = mat4::rotate_y(bodies[i]->angle_orbit_);
 
         if (i == 3)
         {
-            //Make the moon rotate around the earth
-            bodies[i]->pos_ = mat4::translate(earth_.pos_) * (R_y * vec4(bodies[i]->distance_, 0, 0, 0));
+            //Do not make the fail of using the angle of the orbit for the earth
+            mat4 R_y_earth = mat4::rotate_y(earth_.angle_orbit_);
+
+            //Make the moon rotate around the earth:
+            //pos_ = "rotated vector that indicates the earth from the center of the sun"
+            //          + "rotated vector that indicates the moon from the center of the earth"
+            bodies[i]->pos_ = (R_y_earth * vec4(earth_.distance_, 0, 0, 1)) +
+                (R_y * vec4(bodies[i]->distance_, 0, 0, 1));
         } else
         {
             //Updates the position:
-            bodies[i]->pos_ = R_y * vec4(bodies[i]->distance_, 0, 0, 0);
+            bodies[i]->pos_ = R_y * vec4(bodies[i]->distance_, 0, 0, 1);
         }
 
     }
@@ -496,7 +500,7 @@ void Solar_viewer::draw_scene(mat4& _projection, mat4& _view)
      *
      *  Hint: See how it is done for the Sun in the code above.
      */
-
+    
 
     // check for OpenGL errors
     glCheckError();
