@@ -107,7 +107,7 @@ bool Texture::createSunBillboardTexture()
     *   - Experiment with the color and with how fast you change the transparency until the effect satisfies you
     **/
 
-    for (int col = 0; col < width; ++col) {
+    for  (int col = 0; col < width; ++col) {
         for (int row = 0; row < height; ++row) {
             img[(row * width + col) * 4 + 0] = 255; // R
             img[(row * width + col) * 4 + 1] = 255; // G
