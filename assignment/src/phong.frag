@@ -36,6 +36,19 @@ void main()
 
     vec3 color = vec3(0.0,0.0,0.0);
 
+    //I_a * m_a
+    color += 0.2 * sunlight * texture(tex, v2f_texcoord).rgb;
+
+    //I_l * m_d * (n * l)
+    if (dot(v2f_normal, v2f_light) > 0)
+            color += sunlight * texture(tex, v2f_texcoord).rgb * dot(v2f_normal, v2f_light);
+
+    //I_l * m_s * (r * v)^s
+    if (dot(v2f_normal,v2f_light) > 0 && dot(reflect(-v2f_light, v2f_normal),v2f_view) > 0)
+            color += sunlight * texture(tex, v2f_texcoord).rgb
+                        * pow(dot(reflect(-v2f_light, v2f_normal),v2f_view), shininess);
+
+
     // convert RGB color to YUV color and use only the luminance
     if (greyscale) color = vec3(0.299*color.r+0.587*color.g+0.114*color.b);
 
