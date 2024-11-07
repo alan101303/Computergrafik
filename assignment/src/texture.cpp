@@ -111,7 +111,7 @@ bool Texture::createSunBillboardTexture()
     **/
     vec3 sun_light_color = vec3(255, 165, 0);
 
-    for (int col = 0; col < width; ++col) {
+    for  (int col = 0; col < width; ++col) {
         for (int row = 0; row < height; ++row) {
             float distance_to_middle = sqrt((col - width / 2)*(col - width / 2) + (row - height / 2)*(row - height / 2));
             if (distance_to_middle <= 150) {

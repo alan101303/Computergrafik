@@ -28,6 +28,10 @@ uniform vec4 light_position; //in eye space coordinates already
 
 void main()
 {
+    /** \todo
+     * - Copy your working code from the vertex shader of your phong shader.
+     *   and continue with the fragment shader
+     */
     // pass through texture coordinate
     v2f_texcoord = v_texcoord;
 
