@@ -11,6 +11,9 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>
+#include <cmath>
+
+#include "glmath.h"
 #include "lodepng.h"
 
 //=============================================================================
@@ -106,13 +109,31 @@ bool Texture::createSunBillboardTexture()
     *   - Make sure that your texture is fully transparent at its borders to avoid seeing visible edges
     *   - Experiment with the color and with how fast you change the transparency until the effect satisfies you
     **/
+    vec3 sun_light_color = vec3(255, 165, 0);
 
     for (int col = 0; col < width; ++col) {
         for (int row = 0; row < height; ++row) {
-            img[(row * width + col) * 4 + 0] = 255; // R
-            img[(row * width + col) * 4 + 1] = 255; // G
-            img[(row * width + col) * 4 + 2] = 255; // B
-            img[(row * width + col) * 4 + 3] = 255; // A
+            float distance_to_middle = sqrt((col - width / 2)*(col - width / 2) + (row - height / 2)*(row - height / 2));
+            if (distance_to_middle <= 150) {
+                img[(row * width + col) * 4 + 0] = sun_light_color.x; // R
+                img[(row * width + col) * 4 + 1] = sun_light_color.y; // G
+                img[(row * width + col) * 4 + 2] = sun_light_color.z; // B
+                img[(row * width + col) * 4 + 3] = 255; // A
+            } else if (distance_to_middle <= 450)  {
+                float distance_to_middle = sqrt((col - width / 2)*(col - width / 2) + (row - height / 2)*(row - height / 2));
+                float alpha = 255 * (1 - (distance_to_middle)/(450));
+                img[(row * width + col) * 4 + 0] = sun_light_color.x; // R
+                img[(row * width + col) * 4 + 1] = sun_light_color.y; // G
+                img[(row * width + col) * 4 + 2] = sun_light_color.z; // B
+                img[(row * width + col) * 4 + 3] = alpha > 0 ? (int) round(alpha) : 0; // A
+            }
+            else {
+                img[(row * width + col) * 4 + 0] = sun_light_color.x; // R
+                img[(row * width + col) * 4 + 1] = sun_light_color.y; // G
+                img[(row * width + col) * 4 + 2] = sun_light_color.z; // B
+                img[(row * width + col) * 4 + 3] = 0; // A
+            }
+
         }
     }
 
