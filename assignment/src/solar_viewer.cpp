@@ -619,7 +619,7 @@ void Solar_viewer::draw_scene(mat4& _projection, mat4& _view)
      */
 
     //phong_shader_
-    std::array<Planet *, 6> bodies = {&mercury_, &venus_, &moon_, &mars_};
+    std::array<Planet *, 4> bodies = {&mercury_, &venus_, &moon_, &mars_};
     for (Planet* planet : bodies) {
         m_matrix = mat4::translate(planet->pos_) * mat4::rotate_y(planet->angle_self_) * mat4::scale(planet->radius_);
         mv_matrix = _view * m_matrix;

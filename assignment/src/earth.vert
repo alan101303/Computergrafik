@@ -32,9 +32,24 @@ void main()
      * - Copy your working code from the vertex shader of your phong shader.
      *   and continue with the fragment shader
      */
-    // pass through texture coordinate
+    //texcoordinate is hopefully already ok.
     v2f_texcoord = v_texcoord;
 
-    // Compute vertices' normalized device coordinates
-    gl_Position = modelview_projection_matrix * v_position;
+    //multiply v_normal with the matrix that is named normal, don't forget to normalize
+    v2f_normal = normalize(normal_matrix * v_normal);
+
+    //put the vector position in view coordinate to match light_position
+    vec4 eye_v_position = normalize(modelview_matrix * v_position);
+
+    //the view is at the origin of the system of reference of eye_v_position
+    //multiply by -1 to get a vector that goes in the direction of the view
+    //don't forget to normalize
+    v2f_view = normalize(-eye_v_position).xyz;
+
+    //find the vector that goes from the vector to the light source,
+    //and normalize
+    v2f_light = normalize(light_position - eye_v_position).xyz;
+
+    //follow the hint
+    gl_Position = normalize(modelview_projection_matrix * v_position);
 }
