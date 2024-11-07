@@ -28,5 +28,9 @@ uniform vec4 light_position; //in eye space coordinates already
 
 void main()
 {
+    // pass through texture coordinate
+    v2f_texcoord = v_texcoord;
 
+    // Compute vertices' normalized device coordinates
+    gl_Position = modelview_projection_matrix * v_position;
 }
