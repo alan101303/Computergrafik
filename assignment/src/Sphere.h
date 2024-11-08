@@ -1,63 +1,65 @@
 //=============================================================================
 //
-//   Exercise code for the lecture
-//   "Introduction to Computer Graphics"
-//   by Prof. Dr. Mario Botsch, Bielefeld University
+//   Exercise code for the lecture "Introduction to Computer Graphics"
+//     by Prof. Mario Botsch, Bielefeld University
 //
-//   Copyright (C) Computer Graphics Group, Bielefeld University.
+//   Copyright (C) by Computer Graphics Group, Bielefeld University
 //
 //=============================================================================
-
 #ifndef SPHERE_H
 #define SPHERE_H
+//=============================================================================
 
-
-//== INCLUDES =================================================================
-
-#include "Object.h"
-#include "vec3.h"
-
-
-//== CLASS DEFINITION =========================================================
-
-
-/// \class Sphere Sphere.h
-/// This class implements a sphere object, which is specified by its center
-/// and its radius. This class overrides the intersection method Object::intersect().
-class Sphere : public Object
-{
-public:
-    /// Construct a sphere by specifying center and radius
-    Sphere(const vec3& _center=vec3(0,0,0), double _radius=1);
-
-    /// Construct a sphere with parameters parsed from an input stream.
-    Sphere(std::istream &is) { parse(is); }
-
-    /// Compute the intersection of the sphere with \c _ray. Return whether
-    /// there is an intersection. If there is one, return the intersection data.
-    /// This function overrides Object::intersect().
-    /// \param[in] _ray the ray to intersect the plane with
-    /// \param[out] _intersection_point position of the intersection
-    /// \param[out] _intersection_normal normal vector at the intersection point
-    /// \param[out] _intersection_t ray parameter at the intesection point
-    virtual bool intersect(const Ray&  _ray,
-                           vec3&       _intersection_point,
-                           vec3&       _intersection_normal,
-                           double&     _intersection_t) const override;
-
-    /// parse sphere from an input stream
-    virtual void parse(std::istream &is) override {
-        is >> center >> radius >> material;
-    }
-
-private:
-    /// center position of the sphere
-    vec3   center;
-
-    /// radius of the sphere
-    double radius;
-};
+#include "gl.h"
 
 //=============================================================================
-#endif // SPHERE_H defined
+
+/// class that creates a sphere with a desired tessellation degree and renders it
+class Sphere
+{
+public:
+
+    /// default constructor
+    /// \param resolution the degree of the tessellation of the sphere
+    Sphere(unsigned int resolution=10);
+
+    /// destructor
+    ~Sphere();
+
+    /// render mesh of the sphere
+    void draw(GLenum mode=GL_TRIANGLES);
+
+
+private:
+
+    /// generate sphere vertices/triangles and OpenGL buffers
+    void initialize();
+
+
+private:
+
+    /// tessellation resolution
+    unsigned int resolution_;
+    /// indices of the triangle vertices
+    unsigned int n_indices_ = 0;
+
+    // vertex array object
+    GLuint vao_ = 0;
+    /// vertex buffer object
+    GLuint vbo_ = 0;
+    /// normals buffer object
+    GLuint nbo_ = 0;
+    /// tangents buffer object
+    GLuint tan_bo_ = 0;
+    /// bitangents buffer object
+    GLuint bitan_bo_ = 0;
+    /// texture coordinates buffer object
+    GLuint tbo_ = 0;
+    /// index buffer object
+    GLuint ibo_ = 0;
+};
+
+
+//=============================================================================
+#endif
 //=============================================================================

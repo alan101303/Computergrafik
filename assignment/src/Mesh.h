@@ -14,9 +14,11 @@
 
 //== INCLUDES =================================================================
 
-#include "Object.h"
 #include <vector>
 #include <string>
+#include <array>
+#include "glmath.h"
+#include "gl.h"
 
 //== CLASS DEFINITION =========================================================
 
@@ -24,28 +26,42 @@
 /// \class Mesh Mesh.h
 /// This class represents a simple triangle mesh, stored as an indexed face set,
 /// i.e., as an array of vertices and an array of triangles.
-class Mesh : public Object
+class Mesh
 {
 public:
 
     /// This type is used to choose between flat shading and Phong shading
     enum Draw_mode {FLAT, PHONG};
 
-    /// Construct a mesh by parsing its path and properties from an input
-    /// stream. The mesh path read from the file is relative to the 
-    /// scene file's path "scenePath".
-    Mesh(std::istream &is, const std::string &scenePath);
+    // Construct a mesh by reading an OFF file from offPath
+    Mesh(const std::string &offPath) { read(offPath); }
 
-    /// Intersect mesh with ray (calls ray-triangle intersection)
-    /// If \c _ray intersects a face of the mesh, it provides the following results:
-    /// \param[in] _ray the ray to intersect the mesh with
-    /// \param[out] _intersection_point the point of intersection
-    /// \param[out] _intersection_normal the surface normal at intersection point
-    /// \param[out] _intersection_t ray parameter at the intersection point
-    virtual bool intersect(const Ray& _ray,
-                           vec3&      _intersection_point,
-                           vec3&      _intersection_normal,
-                           double&    _intersection_t) const override;
+    void clean() {
+        for (GLuint &b : bufferObjects) {
+            if(b) glDeleteBuffers(1, &b);
+            b = 0;
+        }
+        if (vao) glDeleteVertexArrays(1, &vao);
+    }
+
+    void draw() {
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
+    }
+
+    // A model matrix that scales and translates the mesh to fit within
+    // the bounding box (-1, 0, -1), (1, 2, 1) (to position it on a floor at "y = 0")
+    mat4 modelMatrix() const {
+        float scaleFactor = 2.0 / linf_norm(bb_max_ - bb_min_);
+
+        vec3 translation(-0.5 * (bb_min_[0] + bb_max_[0]),  // Center x component around origin
+                         -bb_min_[1],                       // Place object on the floor (y = 0)
+                         -0.5 * (bb_min_[2] + bb_max_[2])); // Center y component around origin
+
+        return mat4::scale(scaleFactor) * mat4::translate(translation);
+    }
+
+    ~Mesh() { clean(); }
 
 private:
     /// a vertex consists of a position and a normal
@@ -70,36 +86,23 @@ private:
         vec3 normal;
     };
 
+    // OpenGL buffers
+    enum { VTX_BUFFER = 0, NORMAL_BUFFER = 1, INDEX_BUFFER = 2 };
+    GLuint vao = 0;
+    size_t n_indices;
+    std::array<GLuint, 3> bufferObjects{{0, 0, 0}};
+
+    void m_generate_vao();
+
 public:
     /// Read mesh from an OFF file
-    bool read(const std::string &_filename);
+    void read(const std::string &_filename);
 
     /// Compute normal vectors for triangles and vertices
     void compute_normals();
 
     /// Compute the axis-aligned bounding box, store minimum and maximum point in bb_min_ and bb_max_
     void compute_bounding_box();
-
-    /// Does \c _ray intersect the bounding box of the mesh?
-    bool intersect_bounding_box(const Ray& _ray) const;
-
-    /// Intersect a triangle with a ray. Return whether there is an intersection.
-    /// If there is an intersection, store intersection data.
-    /// This function overrides Object::intersect().
-    /// \param[in] _triangle the triangle to be intersected
-    /// \param[in] _ray the ray to intersect the triangle with
-    /// \param[out] _intersection_point the point of intersection
-    /// \param[out] _intersection_normal the surface normal at intersection point
-    /// \param[out] _intersection_t ray parameter at the intersection point
-    bool intersect_triangle(const Triangle&  _triangle,
-                            const Ray&       _ray,
-                            vec3&            _intersection_point,
-                            vec3&            _intersection_normal,
-                            double&          _intersection_t) const;
-
-private:
-    /// Does this mesh use flat or Phong shading?
-    Draw_mode draw_mode_;
 
     /// Array of vertices
     std::vector<Vertex> vertices_;

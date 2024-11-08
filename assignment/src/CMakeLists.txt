@@ -1,34 +1,18 @@
-# add as object library as not to compile all of these twice:
-add_library(common STATIC Cylinder.cpp Mesh.cpp Plane.cpp Scene.cpp Sphere.cpp vec3.cpp)
+# OpenGL & GLEW library
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(raytrace raytrace.cpp)
-add_executable(debug_aabb debug_aabb.cpp)
+# Make sure the textures, shaders and meshes are available
+set(SHADER_PATH   ${CMAKE_SOURCE_DIR}/shaders      CACHE PATH "location of shader programs")
+set(TEXTURE_PATH  ${CMAKE_SOURCE_DIR}/textures     CACHE PATH "location of texture images")
+set(MESH_PATH     ${CMAKE_SOURCE_DIR}/meshes       CACHE PATH "location of example meshes")
+add_definitions("-DSHADER_PATH=\"${SHADER_PATH}\"")
+add_definitions("-DMESH_PATH=\"${MESH_PATH}\"")
+add_definitions("-DTEXTURE_PATH=\"${TEXTURE_PATH}\"")
 
-
-find_package(OpenMP)
-
-SET(TARGETS raytrace debug_aabb)
-
-foreach(TARGET common ${TARGETS})
-    set_target_properties(${TARGET}
-        PROPERTIES
-        CXX_STANDARD 17
-        CXX_STANDARD_REQUIRED YES
-        CXX_EXTENSIONS NO
-    )
-    if(WIN32)
-        # windows standard library needs some special treatment
-        target_compile_definitions(${TARGET} PRIVATE _USE_MATH_DEFINES NOMINMAX)
-    endif()
-
-    if(OpenMP_CXX_FOUND)
-        target_link_libraries(${TARGET} PUBLIC OpenMP::OpenMP_CXX)
-        target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=1")
-    else()
-        target_compile_definitions(${TARGET} PRIVATE "HAVE_OPENMP=0")
-    endif()
-endforeach()
-
-foreach(TARGET ${TARGETS})
-    target_link_libraries(${TARGET} PRIVATE common)
-endforeach()
+# source files
+set(SOURCES glfw_window.cpp glmath.cpp main.cpp shader.cpp ShadowViewer.cpp Mesh.cpp sphere.cpp)
+set(HEADERS glfw_window.h gl.h glmath.h shader.h ShadowViewer.h Mesh.h sphere.h Quad.h CubeMapVisualization.h dumpOpenGLBuffer.h)
+# executable
+add_executable(ShadowViewer ${HEADERS} ${SOURCES})
+target_link_libraries(ShadowViewer glfw lodePNG::lodePNG glew::glew OpenGL::GL)
+target_include_directories(ShadowViewer SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

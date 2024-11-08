@@ -1,31 +1,28 @@
-cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
-cmake_policy(VERSION 3.12.0)
-project(RayTracing
-    VERSION 19
-    LANGUAGES CXX
-    )
+cmake_minimum_required(VERSION 3.14)
 
-# https://blog.kitware.com/cmake-and-the-default-build-type/
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE "RelWithDebInfo"  CACHE STRING "Choose the type of build." FORCE)
-    # options for cmake-gui
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-        "Debug" "Release" "RelWithDebInfo")
+project(ShadowViewer
+    VERSION 1.0
+    LANGUAGES CXX)
+
+# set output paths
+set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-foreach(suffix "" "_Debug" "_Release" "_RelWithDebInfo")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY${suffix} "${CMAKE_CURRENT_BINARY_DIR}")
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY${suffix} "${CMAKE_CURRENT_BINARY_DIR}")
-endforeach()
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(OpenGL REQUIRED)
+
+add_subdirectory(lib/glew)
+add_subdirectory(lib/glfw)
+add_subdirectory(lib/lodePNG)
+
+# add source directory to include path
 
 
+# build source directory
 add_subdirectory(src)
-
-# documentation
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-	# prepare doxygen configuration file
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-	# add doc as target
-	add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-endif(DOXYGEN_FOUND)

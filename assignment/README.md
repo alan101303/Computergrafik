@@ -1,22 +1,9 @@
-Ray Tracer
-==========
+Shadows and Cube Mapping
+========================
+This directory contains the framework code that will be used in the 7th exercise.
 
-We are using a couple of modern C++ features, so please ensure that you use a recent C++ compiler (GCC 8, Clang 7, Visual Studio 2017 are tested).
-You will need [CMake](https://www.cmake.org) for setting up the build environment.
-
-
-Building with QtCreator or CLion (supported on Linux/MacOS/Windows)
--------------------------------------------------------------------
-
-It should be sufficient to open the CMakeLists.txt as a project, then using the
-build button.
-
-Building under the commandline
-------------------------------
-
-On Linux and MacOS, you can use a regular terminal.
-On Windows, this works best inside a WSL (Windows Subsystem for Linux) environment.
-
+Building under Linux/macOS
+--------------------------
 Inside the exercise's top-level directory, execute the following commands:
 
     mkdir build
@@ -25,89 +12,39 @@ Inside the exercise's top-level directory, execute the following commands:
     make
 
 The last command -- i.e. `make` -- compiles the application. Rerun it whenever you have added/changed code in order to recompile.
-You can use `make -j8` to compile with 8 cores (choose an appropriate number).
 
-To build a pretty documentation use:
+Building under Windows Visual Studio
+------------------------------------
+  * Install Visual Studio Community 2013 or later
+  * You will be asked, if you want to install additional packages. Make sure that you check the c++ development option.
+  * Inside the exercise's top-level directory create a new `build` folder (CTRL + SHIFT + N)
+  * Install [CMake] (https://cmake.org/download/)
+  * Start the cmake-gui.exe
+  * Click `Browse Source` and select the exercise's top-level directory
+  * Click `Browse Build` and select the created `build` folder
+  * Click `Configure` and select your Visual Studio version
+  * Start Configuring.
+  * If no major errors occur, click `Generate`
+  * Start Visual Studio
+  * Use `Open Project` to load your `SolarSystem.sln`
+  * On the right, there should be the solution explorer. Find the project `SolarViewer`, right click and choose `Set as StartUp Project`
+  * Press CTRL + F5 to compile and run
 
-    make doc
+Textures and Copyright
+----------------------
+The cube textures are from the Wikipedia article Cube mapping (https://en.wikipedia.org/wiki/Cube_mapping#/media/File:Cube_map.svg).
 
-and open the `index.html` in the html folder with your favourite browser. To build the documentation, you must install Doxygen.
-
-
-Building with XCode (macOS)
----------------------------
-
-If you wish, you can use the CMake build system to generate an XCode project.
-Inside the exercise's top-level directory, execute the following commands:
-
-    mkdir xcode
-    cd xcode
-    cmake -G Xcode ..
-    open RayTracing.xcodeproj
-
-Optionally, this project uses OpenMP for parallelization. Unfortunately,
-XCode's compiler (based on clang) does not come with OpenMP by default.
-You can install it from homebrew using `brew install libomp`.
-Then set this environment variable
-    export OpenMP_ROOT=/opt/homebrew/opt/libomp/
-before running cmake (or delete your build folder and run it again).
-
-
-Building under Microsoft Windows (Visual Studio)
-------------------------------------------------
-
-New way:
-
-* Open the CMakeLists.txt as project
-* Hopefully you can just click 'build'
-
-Old way:
-
-* Start the CMake-GUI.
-* Open the top-level project directory (`assignment_0*`) as source directory.
-* Create and select a subfolder "build" of the raytracing folder as *build directory*
-* Click on configure and select Visual Studio as generator.
-* Click generate to create the Visual Studio project files.
-* Open the Visual Studio solution file that is in the build directory you chose in CMake.
-
-
-Running the Ray Tracer (commandline)
--------------------------------------
-
-The program expects two command line arguments:
- - a path two an input scene (`*.sce`) and
- - a path to an output image (`*.tga`).
-
-To render the scene with the three spheres, while inside the `build` directory, type in your shell:
-
-    ./raytrace ../scenes/spheres/spheres.sce output.tga
-
-If you have finished all exercise tasks, use
-
-    ./raytrace 0
-
-to render all scenes at once.
-
-On Windows, this would be
-
-    .\raytrace.exe ../scenes/spheres/spheres.sce output.tga
-
-
-You may have to adjust the relative paths if the build folder
-containing the `raytrace` or `raytrace.exe` binary is not a
-direct subfolder of the project folder.
-
-Make sure (e.g. with `ls`) that you are specifing the correct path to the input file.
-The output file will be saved in the current working directory of the program, i.e. the directory you started it from.
-
-If `raytrace 0` does not find the input files, you may have to adjust them in `raytrace.cpp`.
-
-
-Running the Ray Tracer from IDEs
--------------------------------------
-
-To set the command line parameters in IDEs like MSVC or Xcode, please refer to the documentation of these programs (or use the command line...).
-You'll likely have to set which program should be run (`raytrace`), a working directory, and commandline arguments.
-If you set the working directory to the build folder, the above paths should work just the same.
-
-
+Keyboard Settings
+-----------------
+  * arrow keys: Navigation of the eye.
+  * W,A,S,D:	Navigation of the selected light.
+  * 8/9:	    Change eye's distance to the observed object.
+  * 1-3:        Select pre-set scenes.
+  * C:          Toggle display of the light as a sphere, cube with demo texture, cube with shadow maps.
+  * F:          Toggle between eye view and one light camera looking through the faces 0-6.
+  * P:          Write the current view to the screenshot "screenshow_#.png".
+  * Tab:        Switch between lights for manual control
+  * =:          Add a light to the scene
+  * -:          Remove a light from the scene
+  * .:          Print configuration
+  * escape:	    Exit viewer.
