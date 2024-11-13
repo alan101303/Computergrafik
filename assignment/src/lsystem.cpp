@@ -13,7 +13,10 @@ std::string LindenmayerSystemDeterministic::expandSymbol(unsigned char const& sy
             map.find: Iterator to an element with key equivalent to key. If no such element is found, past-the-end (see end()) iterator is returned.
             http://en.cppreference.com/w/cpp/container/unordered_map/find
     */
-
+    auto search = rules.find(sym);
+    if (search != rules.end()) {
+        return search->second;
+    }
     return {char(sym)}; // this constructs string from char
     
 }
@@ -24,9 +27,12 @@ std::string LindenmayerSystem::expandOnce(std::string const& symbol_sequence) {
         Perform one iteration of grammar expansion on `symbol_sequence`.
         Use the expandSymbol method
     */
-    
-    return "";
 
+    std::string text;
+    for (char ch: symbol_sequence) {
+        text += expandSymbol(ch);
+    }
+    return text;
 }
 
 std::string LindenmayerSystem::expand(std::string const& initial, uint32_t num_iters) {
@@ -34,8 +40,11 @@ std::string LindenmayerSystem::expand(std::string const& initial, uint32_t num_i
         TODO 1.3
         Perform `num_iters` iterations of grammar expansion (use expandOnce)
     */
-
-    return "";
+    std::string text = initial;
+    for (uint32_t i = 0; i < num_iters; i++) {
+        text = expandOnce(text);
+    }
+    return text;
 }
 
 std::vector<Segment> LindenmayerSystem::draw(std::string const& symbols) {
@@ -69,7 +78,27 @@ std::string LindenmayerSystemStochastic::expandSymbol(unsigned char const& sym) 
 
         Use dice.roll() to get a random number between 0 and 1
     */
-    
+
+    auto search = rules.find(sym);
+    if (search != rules.end()) {
+        std::vector<StochasticRule> stochastic_rules = rules.find(sym) -> second;
+        std::vector<double> addedUpProbs(stochastic_rules.size());
+        // Sum up all probs to get a list with tresholds
+        for (unsigned int i = 0; i < stochastic_rules.size(); i++) {
+            if (i == 0) {
+                addedUpProbs.at(i) = stochastic_rules.at(0).probability;
+            } else {
+                addedUpProbs.at(i) = addedUpProbs.at(i - 1) + stochastic_rules.at(i).probability;
+            }
+        }
+        double randomNum = dice.roll();
+        for (unsigned int i = 0; i < addedUpProbs.size(); i++) {
+            // Check if randomNum is smaller than the treshold
+            if (randomNum < addedUpProbs[i]) {
+                return stochastic_rules.at(i).expansion;
+            }
+        }
+    }
     return {char(sym)};
 }
 
