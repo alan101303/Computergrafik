@@ -46,6 +46,8 @@ mat4 ShadowViewer::m_constructLightViewMatrix(size_t li, size_t cube_face) const
     **/
     vec3 eye, center, up;
 
+    vec3 light_position = scene_view_matrix * m_light[li].position();
+
     switch (cube_face) {
         case 0:
             eye = vec3(1, 0, 0);
@@ -73,8 +75,6 @@ mat4 ShadowViewer::m_constructLightViewMatrix(size_t li, size_t cube_face) const
             break;
 
     }
-
-    vec3 light_position = scene_view_matrix * m_light[li].position();
 
     center = eye + light_position;
 
@@ -184,6 +184,7 @@ void ShadowViewer::draw(const mat4 &view_matrix, const mat4 &projection_matrix) 
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
 
+
         m_phong_shader.use();
         m_shadowMap->bind();
 
@@ -196,8 +197,26 @@ void ShadowViewer::draw(const mat4 &view_matrix, const mat4 &projection_matrix) 
          * You'll need to pass in the light position ***in eye coordinates** as
          * well as the proper material and transformation matrices.
          **/
-        m_shadowMap->unbind();
+        m_phong_shader.set_uniform("light_position", vec3(view_matrix*this->m_light[li].position()), true);
 
+        m_phong_shader.set_uniform("light_color", this->m_light[li].color, true);
+        m_phong_shader.set_uniform("diffuse_color", plane_diffuse, true);
+        m_phong_shader.set_uniform("specular_color", plane_specular, true);
+
+        m_phong_shader.set_uniform("modelview_projection_matrix", plane_mvp_matrix, true);
+        m_phong_shader.set_uniform("modelview_matrix", plane_mv_matrix, true);
+        m_phong_shader.set_uniform("normal_matrix", plane_n_matrix, true);
+        m_quad.draw();
+
+        m_phong_shader.set_uniform("diffuse_color", mesh_diffuse, true);
+        m_phong_shader.set_uniform("specular_color", mesh_specular, true);
+
+        m_phong_shader.set_uniform("modelview_projection_matrix", mesh_mvp_matrix, true);
+        m_phong_shader.set_uniform("modelview_matrix", mesh_mv_matrix, true);
+        m_phong_shader.set_uniform("normal_matrix", mesh_n_matrix, true);
+        m_mesh->draw();
+
+        m_shadowMap->unbind();
         // All other shaders should overwrite the framebuffer color, not add to it...
         glDisable(GL_BLEND);
     }

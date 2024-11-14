@@ -45,6 +45,18 @@ void main()
     * instead of additive tolerance: compare the fragment's distance to 1.01x the
     * distance from the shadow map.
     ***/
+    vec3 v2f_light = normalize(vec3(light_position) - v2f_ec_vertex);
+    vec3 r = normalize((2.0 * dot(v2f_light,N)) * N - v2f_light);
+    vec3 v2f_view = -normalize(v2f_ec_vertex);
+    float frag_dist = length(light_position - v2f_ec_vertex);
+    float min_dist = texture(shadow_map, -v2f_light).r;
+
+    if (frag_dist < 1.01 * min_dist) {
+        if (dot(N, v2f_light) > 0)
+        color += light_color * diffuse_color * dot(N, v2f_light);
+        if (dot(v2f_view, r) > 0)
+        color += light_color * specular_color * pow(dot(r,v2f_view),shininess);
+    }
 
     // append the required alpha value
     f_light_contribution = vec4(color, 1.0);
