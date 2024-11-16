@@ -65,6 +65,57 @@ std::vector<Segment> LindenmayerSystem::draw(std::string const& symbols) {
         There also is a mat2 class in utils/vec.* you may find useful for
         implementing rotations.
     */
+    vec2 pos = vec2(0,0);
+    vec2 dir = vec2(0,1);
+    vec2 destination = vec2(0.0);
+
+    Segment top;
+    std::stack<Segment> stack;
+
+    mat2 rotation_matrix = mat2(0);
+    double angle = deg2rad(rotation_angle_deg);
+
+    for (char chara : symbols)
+
+        switch (chara) {
+
+            case '+': {
+                rotation_matrix =  mat2(cosf(angle), -sinf(angle), sinf(angle), cosf(angle));
+                dir = normalize(rotation_matrix * dir);
+
+                break;
+            }
+
+            case '-': {
+
+                rotation_matrix =  mat2(cosf(-angle), -sinf(-angle), sinf(-angle), cosf(-angle));
+                dir = normalize(rotation_matrix * dir);
+
+                break;
+            }
+
+            case '[': {
+                stack.push({pos, dir});
+                break;
+            }
+
+            case ']': {
+
+                top = stack.top();
+                stack.pop();
+                pos = top.first;
+                dir = top.second;
+
+                break;
+            }
+
+            default:{
+                destination = pos + dir;
+                lines.push_back({pos, destination });
+                pos = destination;
+            }
+
+        }
 
     //============================================================
     return lines;
