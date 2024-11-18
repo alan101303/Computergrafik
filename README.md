@@ -1,7 +1,7 @@
 Semester Overview
 =================
 1. [x] Raytracing
-2. [ ] Rasterization and OpenGL
+2. [x] Rasterization and OpenGL
 3. [ ] Procedural Techniques
 4. [ ] Modeling
 
