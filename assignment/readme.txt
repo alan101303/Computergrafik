@@ -13,3 +13,4 @@ The crossout was tricky, but it worked out, after a lot of trying.
 For all exercises, I tried to recognize the initial geometries in the later iterations. Then I wrote Fs and +s and -s in the first and second iterations and tried the combination that made sense out.
 
 STOCHASTIC SYSTEMS - RICHIE SASEETHARAN:
+It took a while to understand that I had to add the probs into a list and set the boundaries there. Aftet that everything worked out fine.
