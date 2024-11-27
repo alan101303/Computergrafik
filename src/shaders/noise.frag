@@ -65,15 +65,15 @@ float perlin_noise_1d(float x) {
 	 */
 	// ==========================================================
 	// Step 1: Find the surrounding cell corners
-	const int leftCellCorner;
-	const int rightCellCorner;
-	leftCellCorner = floor(2.3);
+	int leftCellCorner;
+	int rightCellCorner;
+	leftCellCorner = int(floor(x));
 	rightCellCorner = leftCellCorner + 1;
 
 	// ==========================================================
 	// Step 2: Determine gradients g at cell corners
-	const int grad[2];
-	const int c1, c2;
+	vec2 grad[2];
+	int c1, c2;
 	c1 = hash_func(vec2(leftCellCorner, 0));
 	c2 = hash_func(vec2(rightCellCorner, 0));
 	grad[0] = gradients[c1%12];
@@ -83,15 +83,15 @@ float perlin_noise_1d(float x) {
 	// Step 3: Calculate contributions
 	// todo: not sure
 	float contrib1, contrib2;
-	contrib1 = grad[0] * (x - c1);
-	contrib2 = grad[0] * (x - c2);
+	contrib1 = grad[0].x * (x - c1);
+	contrib2 = grad[1].x * (x - c2);
 
 	// ==========================================================
 	// Step 4: Interpolate contributions
 	float interpolation;
 	interpolation = mix(contrib1, contrib2, blending_weight_poly(x-c1));
 	// todo: not sure of x-c1. Why not x-c2 ?
-	
+
 	return interpolation;
 }
 
@@ -157,7 +157,54 @@ float perlin_noise(vec2 point) {
 	* Implement 2D perlin noise as described in the handout.
 	* You may find a glsl `for` loop useful here, but it's not necessary.
 	**/
-	return 0.0f;
+	// ==========================================================
+	// Step 1: Find the surrounding cell corners
+	vec2 bottomLeftCorner = vec2(floor(point.x),floor(point.y));
+	vec2 bottomRightCorner = bottomLeftCorner + vec2(1,0);
+	vec2 topLeftCorner = bottomLeftCorner + vec2(0,1);
+	vec2 topRightCorner = bottomRightCorner + vec2(0,1);
+
+	// ==========================================================
+	// Step 2: Determine gradients g at cell corners
+	vec2 grad[4];
+	int c1, c2, c3, c4;
+	c1 = hash_func(bottomLeftCorner);
+	c2 = hash_func(bottomRightCorner);
+	c3 = hash_func(topRightCorner);
+	c4 = hash_func(topLeftCorner);
+	grad[0] = gradients[c1%12];
+	grad[1] = gradients[c2%12];
+	grad[2] = gradients[c3%12];
+	grad[3] = gradients[c4%12];
+
+	// ==========================================================
+	// Step 3: Calculate contributions
+	// this is probably done by Step 4 and Step 5, but I'm not sure
+
+	// ==========================================================
+	// Step 4: Calculate difference vectors
+	vec2 bottomLeftCornerVec = point - bottomLeftCorner;
+	vec2 bottomRightCornerVec = point - bottomRightCorner;
+	vec2 topRightCornerVec = point - topRightCorner;
+	vec2 topLeftCornerVec = point - topLeftCorner;
+
+	// ==========================================================
+	// Step 5: Get scalar values for the corners
+	float contrib1, contrib2, contrib3, contrib4;
+	contrib1 = dot(grad[0], bottomLeftCornerVec);
+	contrib2 = dot(grad[1], bottomRightCornerVec);
+	contrib3 = dot(grad[2], topRightCornerVec);
+	contrib4 = dot(grad[3], topLeftCornerVec);
+
+	// ==========================================================
+	// Step 6: Smooth interpolation and mix
+	// Follow the assignment's guidance
+	float st = mix(contrib1, contrib2, blending_weight_poly(bottomLeftCornerVec.x));
+	float uv = mix(contrib4, contrib3, blending_weight_poly(bottomLeftCornerVec.x));
+	float noise = mix(st, uv, blending_weight_poly(bottomLeftCornerVec.y));
+
+
+	return noise;
 }
 
 // ==============================================================
