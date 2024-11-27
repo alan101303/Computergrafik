@@ -65,34 +65,32 @@ float perlin_noise_1d(float x) {
 	 */
 	// ==========================================================
 	// Step 1: Find the surrounding cell corners
-	int leftCellCorner;
-	int rightCellCorner;
-	leftCellCorner = int(floor(x));
+	float leftCellCorner;
+	float rightCellCorner;
+	leftCellCorner = floor(x);
 	rightCellCorner = leftCellCorner + 1;
 
 	// ==========================================================
 	// Step 2: Determine gradients g at cell corners
 	vec2 grad[2];
-	int c1, c2;
-	c1 = hash_func(vec2(leftCellCorner, 0));
-	c2 = hash_func(vec2(rightCellCorner, 0));
-	grad[0] = gradients[c1%12];
-	grad[1] = gradients[c2%12];
+	int a, b;
+	a = hash_func(vec2(leftCellCorner, 0)) % NUM_GRADIENTS;
+	b = hash_func(vec2(rightCellCorner, 0)) % NUM_GRADIENTS;
+	grad[0] = gradients[(a%NUM_GRADIENTS)];
+	grad[1] = gradients[(b%NUM_GRADIENTS)];
 
 	// ==========================================================
 	// Step 3: Calculate contributions
-	// todo: not sure
 	float contrib1, contrib2;
-	contrib1 = grad[0].x * (x - c1);
-	contrib2 = grad[1].x * (x - c2);
+	contrib1 = grad[0].x * (x - leftCellCorner);
+	contrib2 = grad[1].x * (x - rightCellCorner);
 
 	// ==========================================================
 	// Step 4: Interpolate contributions
-	float interpolation;
-	interpolation = mix(contrib1, contrib2, blending_weight_poly(x-c1));
-	// todo: not sure of x-c1. Why not x-c2 ?
+	float noise;
+	noise = mix(contrib1, contrib2, blending_weight_poly(x-leftCellCorner));
 
-	return interpolation;
+	return noise;
 }
 
 float perlin_fbm_1d(float x) {
@@ -179,7 +177,7 @@ float perlin_noise(vec2 point) {
 
 	// ==========================================================
 	// Step 3: Calculate contributions
-	// this is probably done by Step 4 and Step 5, but I'm not sure
+	// This is done by Step 4 and Step 5
 
 	// ==========================================================
 	// Step 4: Calculate difference vectors
