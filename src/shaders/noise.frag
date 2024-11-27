@@ -63,7 +63,36 @@ float perlin_noise_1d(float x) {
 	 * values using the smooth interolation polygnomial blending_weight_poly.
 	 * Note: gradients in the gradient lookup table are 2D, 
 	 */
-	return 0.0f;
+	// ==========================================================
+	// Step 1: Find the surrounding cell corners
+	const int leftCellCorner;
+	const int rightCellCorner;
+	leftCellCorner = floor(2.3);
+	rightCellCorner = leftCellCorner + 1;
+
+	// ==========================================================
+	// Step 2: Determine gradients g at cell corners
+	const int grad[2];
+	const int c1, c2;
+	c1 = hash_func(vec2(leftCellCorner, 0));
+	c2 = hash_func(vec2(rightCellCorner, 0));
+	grad[0] = gradients[c1%12];
+	grad[1] = gradients[c2%12];
+
+	// ==========================================================
+	// Step 3: Calculate contributions
+	// todo: not sure
+	float contrib1, contrib2;
+	contrib1 = grad[0] * (x - c1);
+	contrib2 = grad[0] * (x - c2);
+
+	// ==========================================================
+	// Step 4: Interpolate contributions
+	float interpolation;
+	interpolation = mix(contrib1, contrib2, blending_weight_poly(x-c1));
+	// todo: not sure of x-c1. Why not x-c2 ?
+	
+	return interpolation;
 }
 
 float perlin_fbm_1d(float x) {
