@@ -102,7 +102,7 @@ float perlin_fbm_1d(float x) {
 	 * successive octave.
 	 * Note: the GLSL `for` loop may be useful.
 	 */
-	float fbm;
+	float fbm = 0;
 
 	for (int i = 0; i < num_octaves; i++) {
 		fbm += pow(ampl_multiplier, i) * perlin_noise_1d(x * pow(freq_multiplier, i));
@@ -214,7 +214,7 @@ float perlin_fbm(vec2 point) {
 	 * should use the constants num_octaves, freq_multiplier, and
 	 * ampl_multiplier. 
 	 */
-	float fbm;
+	float fbm = 0;
 
 	for (int i = 0; i < num_octaves; i++) {
 		fbm += pow(ampl_multiplier, i) * perlin_noise(point * pow(freq_multiplier, i));
@@ -231,7 +231,7 @@ float turbulence(vec2 point) {
 	 * Implement the 2D turbulence function as described in the handout.
 	 * Again, you should use num_octaves, freq_multiplier, and ampl_multiplier.
 	 */
-	float fbm;
+	float fbm = 0;
 
 	for (int i = 0; i < num_octaves; i++) {
 		fbm += pow(ampl_multiplier, i) * abs(perlin_noise(point * pow(freq_multiplier, i)));

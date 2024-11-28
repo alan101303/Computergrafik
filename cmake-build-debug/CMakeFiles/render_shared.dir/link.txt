@@ -1,2 +1,0 @@
-C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\ar.exe qc librender_shared.a CMakeFiles/render_shared.dir/src/utils/vec.cpp.obj CMakeFiles/render_shared.dir/src/render/shader.cpp.obj CMakeFiles/render_shared.dir/src/render/Mesh.cpp.obj CMakeFiles/render_shared.dir/src/render/StaticMeshActor.cpp.obj CMakeFiles/render_shared.dir/src/render/glfw_window.cpp.obj CMakeFiles/render_shared.dir/src/render/MeshViewer.cpp.obj CMakeFiles/render_shared.dir/src/render/ShaderViewer.cpp.obj
-C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\ranlib.exe librender_shared.a
