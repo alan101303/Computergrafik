@@ -23,6 +23,12 @@ The last "wave" disappears. (at least on my laptop, today)
 I have structured the code for this method in Steps, too. The titles explain what each Step does.
 There was no particular problem. The debugging of this method consisted simply in correcting the types of the variables I used. Everything worked out fine after doing that.
 
+FBM AND TURBOLENCE - RICHIE SASEETHARAN:
+
+
+TEXTURES - RICHIE SASEETHARAN:
+
+
 TERRAIN - FRANCESCO LAM:
 For the resolution of the task, not much trouble.
 I had some compiling issues because I was trying to run the executionable without the proper build. Besides that, it looks fine.
