@@ -1,1 +1,0 @@
-/usr/bin/c++ -O2 -g -DNDEBUG CMakeFiles/terrain.dir/src/main_terrain.cpp.o -o terrain  librender_shared.a libglfw3.a /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl liblodePNG.a libglew.a /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so 
