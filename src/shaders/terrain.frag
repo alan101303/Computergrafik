@@ -40,13 +40,36 @@ void main()
 	 *		color = interpolate between terrain_color_grass and terrain_color_mountain, weight is (height - terrain_water_level)*2
 	 * 		shininess = 0.5
      */
-	vec3 material = terrain_color_grass;
-	float shininess = 0.5;
+	vec3 material;
+	float shininess;
+
+	if (height > terrain_water_level) {
+		material = mix(terrain_color_grass, terrain_color_mountain, (height - terrain_water_level)*2);
+		shininess = 0.5;
+	} else {
+		material = terrain_color_water;
+		shininess = 8.0;
+	}
 
     /**
 	 * \todo Paste your Phong fragment shading code from assignment 6/7 here,
 	 * altering it to use the terrain color as the ambient, diffuse, and
 	 * specular materials.
      */
-	f_color = vec4(material, 1.0);
+	// normalize directions
+	vec3 light_ray = v2f_ec_vertex - light_position; // ray cast from light to fragment
+
+	vec3 N = normalize(v2f_normal);
+	vec3 L = normalize(-light_ray);
+	vec3 V = normalize(-v2f_ec_vertex);
+	vec3 R = normalize(reflect(-L, N));
+
+	// compute diffuse and specular intensities
+	float diffuseCoeff  = max(0.0, dot(N,L));
+	float specularCoeff = (diffuseCoeff != 0.0) ? pow(max(0.0, dot(V,R)), shininess) : 0.0;
+
+	vec3 color = ambient * material + diffuseCoeff * material * sunlight + specularCoeff * material * sunlight;
+
+	// add required alpha value
+	f_color = vec4(color, 1.0);
 }

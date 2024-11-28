@@ -1,2 +1,2 @@
 cd ..
-build\Debug\terrain
+build\terrain
